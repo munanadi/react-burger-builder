@@ -4,12 +4,24 @@ import Backdrop from "../Backdrop/Backdrop";
 
 import classes from "./Modal.module.css";
 
-const Modal = ({ children, show, modalClosed }) =>
-  show ? (
-    <>
-      <Backdrop show={show} clicked={modalClosed}/>
-      <div className={classes.Modal}>{children}</div>)
-    </>
-  ) : null;
+const Modal = props => {
+  if (props.show) {
+    return (
+      <>
+        <Backdrop show={props.show} clicked={props.modalClosed} />
+        <div className={classes.Modal}>{props.children}</div>
+      </>
+    );
+  }
+  return null;
+};
 
-export default Modal;
+// Modal rendered only when show property changes.
+const check = (prevProps, nextProps) => {
+  return (
+    prevProps.show === nextProps.show ||
+    prevProps.children === nextProps.children
+  );
+};
+
+export default React.memo(Modal, check);
