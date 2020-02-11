@@ -18,17 +18,24 @@ const INGREDIENT_PRICES = {
 
 class BurgerBuilder extends Component {
   state = {
-    ingredients: {
-      salad: 0,
-      bacon: 0,
-      cheese: 0,
-      meat: 0
-    },
     totalPrice: 4,
     purchasable: false,
     purchasing: false, //checks if order now button is clicked to show modal Order Summary
-    loading: false
+    loading: false,
+    error: null // Check if the initial ingredients were fetched correctly
   };
+
+  componentDidMount() {
+    // Fetch the ingredients from /ingredients.json and setup
+    axios
+      .get("ingredients.json")
+      .then(res => {
+        this.setState({ ingredients: res.data });
+      })
+      .catch(err => {
+        this.setState({ error: err });
+      });
+  }
 
   udpatePurchasableState = ingredients => {
     // find if any ingredients are present at all
@@ -109,9 +116,16 @@ class BurgerBuilder extends Component {
 
     return (
       <React.Fragment>
-        <Burger ingredients={this.state.ingredients} />
+        {/* Check if the ingredients are present before showing the burger */}
+        {this.state.ingredients ? (
+          <Burger ingredients={this.state.ingredients} />
+        ) : (
+          <h2 style={{ textAlign: "center" }}>
+            Something went wrong fetching the initial Ingredients
+          </h2>
+        )}
         <Modal show={this.state.purchasing} modalClosed={this.cancelPurchasing}>
-          {!this.state.loading ? (
+          {!this.state.loading && this.state.ingredients ? (
             <OrderSummary
               ingredients={this.state.ingredients}
               totalPrice={this.state.totalPrice}

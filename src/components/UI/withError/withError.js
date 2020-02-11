@@ -10,16 +10,22 @@ const withError = (WrapperComponent, axios) => {
         error: null
       };
       // axios interceptors to catch the errors on responses and clear them out while sending requests.
-      axios.interceptors.request.use(request => {
+      this.reqInterceptor = axios.interceptors.request.use(request => {
         this.setState({ error: null });
         return request;
       });
-      axios.interceptors.response.use(
+      this.resInterceptor = axios.interceptors.response.use(
         response => response,
         error => {
           this.setState({ error: error });
         }
       );
+    }
+
+    componentWillUnmount() {
+      // remove interceptors while component unmounts
+      axios.interceptors.request.eject(this.reqInterceptor);
+      axios.interceptors.response.eject(this.resInterceptor);
     }
 
     handleErrorModalClose = () => {
