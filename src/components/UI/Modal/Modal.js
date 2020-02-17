@@ -24,4 +24,5 @@ const check = (prevProps, nextProps) => {
   );
 };
 
+// As modal only needs to be rendered when it's show on the screen and not always.
 export default React.memo(Modal, check);

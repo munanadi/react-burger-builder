@@ -20,7 +20,7 @@ class BurgerBuilder extends Component {
   state = {
     totalPrice: 4,
     purchasable: false,
-    purchasing: false, //checks if order now button is clicked to show modal Order Summary
+    purchasing: false, //checks if order now button is clicked to show modal for Order Summary
     loading: false,
     error: null // Check if the initial ingredients were fetched correctly
   };
@@ -86,25 +86,21 @@ class BurgerBuilder extends Component {
 
   // Continue with our order and check out
   conitnuePurchasing = () => {
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "John Doe",
-        email: "jhon@gmail.com"
-      }
-    };
-    axios
-      .post("/orders.json", order)
-      .then(res => {
-        // Order goes through - close the modal and stop the loading spinner
-        this.setState({ loading: false, purchasing: false });
-      })
-      .catch(err => {
-        // Something went wrong
-        this.setState({ loading: false, purchasing: false });
-      });
+    //  show the contact form to fill data
+    // encode all the ingredients in the search parameters
+    let params = [];
+    for (let i in this.state.ingredients) {
+      params.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+    const queryString = params.join("&");
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryString
+    });
   };
 
   render() {
