@@ -9,21 +9,24 @@
   justify-content: space-between;
 }
 
-.Navbar ul {
+.Nav {
   display: flex;
   justify-content: center;
   align-items: center;
   list-style-type: none;
 }
 
-.Navbar ul li {
+.Links {
   margin: 0 10px;
   padding: 5px;
   cursor: pointer;
+  color: black;
+  text-decoration: none;
 }
 
-.Navbar ul li:hover {
-  background-color: #946a2b;
+.Links:hover {
+  color: white;
+  background-color: #835819;
 }
 
 @media (max-width: 450px) {

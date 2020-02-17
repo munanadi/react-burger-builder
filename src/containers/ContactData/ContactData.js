@@ -27,7 +27,7 @@ class ContactData extends Component {
       .then(res => {
         // Order goes through - close the modal and stop the loading spinner
         this.setState({ loading: false, purchasing: false });
-        this.props.history("/");
+        this.props.history.push("/");
       })
       .catch(err => {
         // Something went wrong
