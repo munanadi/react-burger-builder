@@ -4,9 +4,14 @@ import Button from "../../components/UI/Button/Button";
 import classes from "./ContactData.module.css";
 import axios from "../../axios-orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import Input from "../../components/UI/Input/Input";
 
 class ContactData extends Component {
   state = {
+    orderForm: {
+      name: "",
+      email: ""
+    },
     loading: false
   };
 
@@ -18,8 +23,8 @@ class ContactData extends Component {
       ingredients: this.props.ingredients,
       price: 0 || this.state.totalPrice,
       customer: {
-        name: "John Doe",
-        email: "jhon@gmail.com"
+        name: this.state.orderForm.name,
+        email: this.state.orderForm.email
       }
     };
     axios
@@ -35,24 +40,36 @@ class ContactData extends Component {
       });
   };
 
+  inputChangeHandler = event => {
+    const udpatedForm = { ...this.state.orderForm };
+    udpatedForm[event.target.name] = event.target.value;
+    this.setState({
+      orderForm: udpatedForm
+    });
+  };
+
   render() {
     let form = (
-      <form>
-        <input
-          className={classes.Input}
+      <form onSubmit={this.handleContactFormSubmit}>
+        <Input
+          inputtype="input"
           type="text"
+          label="Name"
           name="name"
           placeholder="Enter Name"
+          required
+          changed={event => this.inputChangeHandler(event)}
         />
-        <input
-          className={classes.Input}
+        <Input
+          inputtype="input"
           type="email"
+          label="Email"
           name="email"
+          required
           placeholder="Enter Email"
+          changed={event => this.inputChangeHandler(event)}
         />
-        <Button buttonType={"Success"} clicked={this.handleContactFormSubmit}>
-          Order
-        </Button>
+        <Button buttonType={"Success"}>Order</Button>
       </form>
     );
     if (this.state.loading) {

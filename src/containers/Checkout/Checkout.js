@@ -4,17 +4,17 @@ import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSumm
 import ContactData from "../ContactData/ContactData";
 
 class Checkout extends Component {
-  state = { ingredients: null };
-
-  componentWillMount() {
+  constructor(props) {
+    super(props);
     const query = new URLSearchParams(this.props.location.search);
     const ingredients = {};
 
     for (let params of query.entries()) {
       ingredients[params[0]] = +params[1];
     }
-
-    this.setState({ ingredients: ingredients });
+    this.state = {
+      ingredients: ingredients
+    };
   }
 
   checkoutContinueHandler = () => {
