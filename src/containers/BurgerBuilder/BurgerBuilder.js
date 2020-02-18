@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import * as actionTypes from "../../store/actions";
+import {
+  addIngredient,
+  removeIngredient,
+  initIngredients
+} from "../../store/actions/index";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
@@ -12,12 +16,12 @@ import axios from "../../axios-orders";
 
 class BurgerBuilder extends Component {
   state = {
-    purchasing: false, //checks if order now button is clicked to show modal for Order Summary
-    loading: false,
-    error: null // Check if the initial ingredients were fetched correctly
+    purchasing: false //checks if order now button is clicked to show modal for Order Summary
   };
 
-  // for now fetched ingredients initially from redux.
+  componentDidMount() {
+    this.props.onInitIngredients();
+  }
 
   udpatePurchasableState = ingredients => {
     // find if any ingredients are present at all
@@ -51,14 +55,6 @@ class BurgerBuilder extends Component {
 
     return (
       <React.Fragment>
-        {/* Check if the ingredients are present before showing the burger */}
-        {this.props.ingredients ? (
-          <Burger ingredients={this.props.ingredients} />
-        ) : (
-          <h2 style={{ textAlign: "center" }}>
-            Something went wrong fetching the initial Ingredients
-          </h2>
-        )}
         <Modal show={this.state.purchasing} modalClosed={this.cancelPurchasing}>
           {!this.state.loading && this.props.ingredients ? (
             <OrderSummary
@@ -71,14 +67,28 @@ class BurgerBuilder extends Component {
             <Spinner />
           )}
         </Modal>
-        <BuildControls
-          ingredientAdd={this.props.addIngredient}
-          removeIngredient={this.props.removeIngredient}
-          disabledInfo={disabledInfo}
-          price={this.props.totalPrice}
-          purchasable={this.udpatePurchasableState(this.props.ingredients)}
-          updatePurchasing={this.updatePurchasing}
-        />
+        {/* Check if the ingredients are present before showing the burger */}
+        {this.props.ingredients ? (
+          <>
+            <Burger ingredients={this.props.ingredients} />
+            <BuildControls
+              ingredientAdd={this.props.addIngredient}
+              removeIngredient={this.props.removeIngredient}
+              disabledInfo={disabledInfo}
+              price={this.props.totalPrice}
+              purchasable={
+                this.props.ingredients
+                  ? this.udpatePurchasableState(this.props.ingredients)
+                  : false
+              }
+              updatePurchasing={this.updatePurchasing}
+            />
+          </>
+        ) : (
+          <h2 style={{ textAlign: "center" }}>
+            Something went wrong fetching the initial Ingredients
+          </h2>
+        )}
       </React.Fragment>
     );
   }
@@ -86,17 +96,17 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    error: state.burgerBuilder.error
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    addIngredient: igName =>
-      dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientName: igName }),
-    removeIngredient: igName =>
-      dispatch({ type: actionTypes.REMOVE_INGREDIENT, ingredientName: igName })
+    addIngredient: igName => dispatch(addIngredient(igName)),
+    removeIngredient: igName => dispatch(removeIngredient(igName)),
+    onInitIngredients: () => dispatch(initIngredients())
   };
 };
 

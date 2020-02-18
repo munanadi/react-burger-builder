@@ -1,43 +1,55 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import Order from "../../components/Order/Order";
 import withError from "../../components/UI/withError/withError";
+import Spinner from "../../components/UI/Spinner/Spinner";
 import axios from "../../axios-orders";
+import { fetchOrders } from "../../store/actions/index";
 
 class Orders extends Component {
-  state = {
-    loading: true,
-    orders: []
-  };
-
   componentDidMount() {
-    // get orders as the page load
-    axios
-      .get("/orders.json")
-      .then(res => {
-        const fetchedOrders = [];
-        for (let key in res.data) {
-          fetchedOrders.push({ ...res.data[key], id: key });
-        }
-        this.setState({ loading: false, orders: fetchedOrders });
-      })
-      .catch(err => this.setState({ loading: false }));
+    this.props.fetchOrders();
   }
 
   render() {
-    return (
+    let display = (
       <div style={{ marginTop: "100px" }}>
-        {this.state.orders.map(order => {
-          return (
-            <Order
-              key={order.id}
-              price={order.price}
-              ingredients={order.ingredients}
-            />
-          );
-        })}
+        <Spinner />
       </div>
     );
+    if (!this.props.loading) {
+      display = (
+        <div style={{ marginTop: "100px" }}>
+          {this.props.orders.map(order => {
+            return (
+              <Order
+                key={order.id}
+                price={order.price}
+                ingredients={order.ingredients}
+              />
+            );
+          })}
+        </div>
+      );
+    }
+    return display;
   }
 }
 
-export default withError(Orders, axios);
+const mapStateToProps = state => {
+  return {
+    loading: state.order.loading,
+    orders: state.order.orders
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchOrders: () => dispatch(fetchOrders())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withError(Orders, axios));
