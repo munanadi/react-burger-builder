@@ -28,7 +28,7 @@ class ContactData extends Component {
         email: this.state.orderForm.email
       }
     };
-    this.props.onOrder(order, this.props.history);
+    this.props.onOrder(order, this.props.token, this.props.history);
   };
 
   inputChangeHandler = event => {
@@ -80,14 +80,15 @@ const mapStateToProps = state => {
   return {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.token
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onOrder: (orderData, history) =>
-      dispatch(purchaseBurger(orderData, history))
+    onOrder: (orderData, token, history) =>
+      dispatch(purchaseBurger(orderData, token, history))
   };
 };
 
