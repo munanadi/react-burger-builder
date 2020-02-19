@@ -50,7 +50,7 @@ export const logout = () => {
   };
 };
 
-export const checkAuthTimeout = expiresIn => {
+const checkAuthTimeout = expiresIn => {
   return dispatch => {
     setTimeout(() => {
       dispatch(logout());

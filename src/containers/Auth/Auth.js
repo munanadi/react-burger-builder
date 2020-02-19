@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import { authenticate } from "../../store/actions/index";
 import Input from "../../components/UI/Input/Input";
 import Spinner from "../../components/UI/Spinner/Spinner";
@@ -18,6 +19,7 @@ const firebaseErrorMessages = [
 ];
 
 export class Auth extends Component {
+  componentDidMount() {}
   state = {
     user: {
       email: "",
@@ -50,6 +52,8 @@ export class Auth extends Component {
   };
 
   render() {
+    if (this.props.token !== null) return <Redirect to="/" />;
+
     let error = null;
 
     if (this.props.error) {

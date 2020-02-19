@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Order from "../../components/Order/Order";
 import withError from "../../components/UI/withError/withError";
@@ -8,10 +9,11 @@ import { fetchOrders } from "../../store/actions/index";
 
 class Orders extends Component {
   componentDidMount() {
-    this.props.fetchOrders(this.props.token);
+    if (this.props.token) this.props.fetchOrders(this.props.token);
   }
 
   render() {
+    if (!this.props.token) return <Redirect to="/" />;
     let display = (
       <div style={{ marginTop: "100px" }}>
         <Spinner />
