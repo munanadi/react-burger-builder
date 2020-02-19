@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userId: action.authData.localId,
-        token: action.authData.idToken,
+        token: action.authData.token,
         loading: false
       };
     case actionTypes.AUTH_FAIL:

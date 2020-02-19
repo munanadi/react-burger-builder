@@ -26,7 +26,8 @@ class ContactData extends Component {
       customer: {
         name: this.state.orderForm.name,
         email: this.state.orderForm.email
-      }
+      },
+      userId: this.props.userId
     };
     this.props.onOrder(order, this.props.token, this.props.history);
   };
@@ -81,7 +82,8 @@ const mapStateToProps = state => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
-    token: state.auth.token
+    token: state.auth.token,
+    userId: state.auth.userId
   };
 };
 
