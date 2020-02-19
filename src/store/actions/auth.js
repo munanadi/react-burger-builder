@@ -34,7 +34,13 @@ export const authenticate = (email, password, isSingUp) => {
     axios
       .post(url, { email, password, returnSecureToken: true })
       .then(response => {
-        console.log(response);
+        //   store the token and expiration when logged in
+        localStorage.setItem("token", response.data.idToken);
+        localStorage.setItem("userId", response.data.localId);
+        localStorage.setItem(
+          "expirirationDate",
+          new Date(Date.now() + response.data.expiresIn * 1000)
+        );
         dispatch(authenticationSuccess(response.data));
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
@@ -45,6 +51,10 @@ export const authenticate = (email, password, isSingUp) => {
 };
 
 export const logout = () => {
+  // remove the tokens when logged out
+  localStorage.removeItem("token");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("expirirationDate");
   return {
     type: actionTypes.LOGOUT
   };
@@ -55,5 +65,28 @@ const checkAuthTimeout = expiresIn => {
     setTimeout(() => {
       dispatch(logout());
     }, expiresIn * 1000);
+  };
+};
+
+export const checkAuthStatus = () => {
+  return dispatch => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      dispatch(logout());
+    } else {
+      const expirirationDate = new Date(
+        localStorage.getItem("expirirationDate")
+      );
+      if (expirirationDate <= new Date()) dispatch(logout());
+      else {
+        const localId = localStorage.getItem("userId");
+        dispatch(authenticationSuccess({ token, localId }));
+        dispatch(
+          checkAuthTimeout(
+            (expirirationDate.getTime() - new Date().getTime()) / 1000
+          )
+        );
+      }
+    }
   };
 };

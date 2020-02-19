@@ -5,4 +5,4 @@ export {
   fetchIngredientsFailed
 } from "./burgerBuilder";
 export { purchaseBurger, fetchOrders } from "./orders";
-export { authenticate, logout  } from "./auth";
+export { authenticate, logout, checkAuthStatus } from "./auth";
