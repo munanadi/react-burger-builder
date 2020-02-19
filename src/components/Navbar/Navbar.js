@@ -7,8 +7,15 @@ function Navbar() {
     <nav className={classes.Navbar}>
       <h1>Burger Builder</h1>
       <ul className={classes.Nav}>
-        <Link to="/" className={classes.Links}>Burger Builder</Link>
-        <Link to="/orders" className={classes.Links}>Orders</Link>
+        <Link to="/" className={classes.Links}>
+          Burger Builder
+        </Link>
+        <Link to="/orders" className={classes.Links}>
+          Orders
+        </Link>
+        <Link to="/auth" className={classes.Links}>
+          Authenticate
+        </Link>
       </ul>
     </nav>
   );
