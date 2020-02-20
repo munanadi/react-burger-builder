@@ -8,7 +8,6 @@ const Lazyloader = importComponent => {
 
     componentDidMount() {
       importComponent().then(c => {
-        console.log(c);
         this.setState({ component: c.default });
       });
     }
