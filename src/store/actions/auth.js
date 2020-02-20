@@ -15,10 +15,11 @@ const authenticationFailed = error => {
   };
 };
 
-const authenticationSuccess = authData => {
+const authenticationSuccess = (userId, token) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
-    authData: authData
+    userId: userId,
+    token: token
   };
 };
 
@@ -41,7 +42,9 @@ export const authenticate = (email, password, isSingUp) => {
           "expirirationDate",
           new Date(Date.now() + response.data.expiresIn * 1000)
         );
-        dispatch(authenticationSuccess(response.data));
+        dispatch(
+          authenticationSuccess(response.data.localId, response.data.idToken)
+        );
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
       .catch(error => {
@@ -79,8 +82,8 @@ export const checkAuthStatus = () => {
       );
       if (expirirationDate <= new Date()) dispatch(logout());
       else {
-        const localId = localStorage.getItem("userId");
-        dispatch(authenticationSuccess({ token, localId }));
+        const userId = localStorage.getItem("userId");
+        dispatch(authenticationSuccess(userId, token));
         dispatch(
           checkAuthTimeout(
             (expirirationDate.getTime() - new Date().getTime()) / 1000

@@ -9,8 +9,9 @@ import { fetchOrders } from "../../store/actions/index";
 
 class Orders extends Component {
   componentDidMount() {
-    if (this.props.token)
+    if (this.props.token) {
       this.props.fetchOrders(this.props.token, this.props.userId);
+    }
   }
 
   render() {
@@ -21,19 +22,27 @@ class Orders extends Component {
       </div>
     );
     if (!this.props.loading) {
-      display = (
-        <div style={{ marginTop: "100px" }}>
-          {this.props.orders.map(order => {
-            return (
-              <Order
-                key={order.id}
-                price={order.price}
-                ingredients={order.ingredients}
-              />
-            );
-          })}
-        </div>
-      );
+      if (!this.props.orders.length)
+        display = (
+          <h1 style={{ textAlign: "center", marginTop: "20px" }}>
+            You have no orders!
+          </h1>
+        );
+      else {
+        display = (
+          <div style={{ marginTop: "100px" }}>
+            {this.props.orders.map(order => {
+              return (
+                <Order
+                  key={order.id}
+                  price={order.price}
+                  ingredients={order.ingredients}
+                />
+              );
+            })}
+          </div>
+        );
+      }
     }
     return display;
   }

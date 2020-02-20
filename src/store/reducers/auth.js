@@ -13,13 +13,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
     case actionTypes.AUTH_SUCCESS:
       return {
         ...state,
-        userId: action.authData.localId,
-        token: action.authData.token,
+        userId: action.userId,
+        token: action.token,
         loading: false
       };
     case actionTypes.AUTH_FAIL:
